@@ -3,9 +3,11 @@ package com.doomlike.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 
 public class Tilemap {
 	public static final int TILE_UNIT = 32;
+	public static final Vector2 TILE_UNIT_VECTOR = new Vector2(Tilemap.TILE_UNIT, Tilemap.TILE_UNIT);
 
 	private int[][] tilemap = null;
 
@@ -68,7 +70,38 @@ public class Tilemap {
 		}
 	}
 
-	public void raycast(float playerX, float playerY) {
+	public void raycast(Vector2 origin, Vector2 dest) {
+		// final float yDiff = originX - destX;
+		// final float xDiff = originY - destY;
 
+		// final float xDir = xDiff < 0 ? -1 : 1;
+		// final float yDir = yDiff < 0 ? -1 : 1;
+
+		// final float RAY_LENGTH = (float) Math.sqrt((yDiff * yDiff) + (xDiff * xDiff));
+		// final float xStepLength = (float) Math.sqrt(1 + ((yDiff/xDiff) * (yDiff/xDiff)));
+		// final float yStepLength = (float) Math.sqrt(1 + ((xDiff/yDiff) * (xDiff/yDiff)));
+
+		// int tileX = -1;
+		// int tileY = -1;
+
+		// int xRaySteps = 0;
+		// int yRaySteps = 0;
+		// while (Math.abs(xRaySteps) < RAY_LENGTH && Math.abs(yRaySteps) < RAY_LENGTH) {
+		// 	float xStep = xStepLength * xRaySteps;
+		// 	float yStep = yStepLength * yRaySteps;
+		// 	if (xStep <= yStep) {
+		// 		xRaySteps += 1;
+		// 	} else {
+		// 		yRaySteps += 1;
+		// 	}
+
+		// 	tileY = (int) (originY + yStep) / TILE_UNIT;
+		// 	tileX = (int) (originX + xStep) / TILE_UNIT;
+		// 	// if (tilemap[tileY][tileX] == 1) {
+		// 	// 	System.out.println("made it here");
+		// 	// }
+		// }
+
+		// System.out.printf("%d %d\n", tileX, tileY);
 	}
 }

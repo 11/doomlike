@@ -6,10 +6,12 @@ import com.badlogic.gdx.InputProcessor;
 public class InputManager implements InputProcessor {
 	private Player player;
 	private Tilemap tilemap;
+	private DoomLike renderer;
 	
-	public InputManager(Player player, Tilemap tilemap) {
+	public InputManager(Player player, Tilemap tilemap, DoomLike renderer) {
 		this.player = player;
 		this.tilemap = tilemap;
+		this.renderer = renderer;
 	}
 	
 	@Override
@@ -29,6 +31,14 @@ public class InputManager implements InputProcessor {
 			}
 			case Input.Keys.D: {
 				player.setIsMovingRight(true);
+				break;
+			}
+			case Input.Keys.RIGHT: {
+				player.setIsRotatingLeft(true);
+				break;
+			}
+			case Input.Keys.LEFT: {
+				player.setIsRotatingRight(true);
 				break;
 			}
 		}
@@ -55,6 +65,22 @@ public class InputManager implements InputProcessor {
 				player.setIsMovingRight(false);
 				break;
 			}
+			case Input.Keys.RIGHT: {
+				player.setIsRotatingLeft(false);
+				break;
+			}
+			case Input.Keys.LEFT: {
+				player.setIsRotatingRight(false);
+				break;
+			}
+			case Input.Keys.NUM_1: {
+				renderer.setRenderMode(DoomLike.TOP_DOWN_MODE);
+				break;
+			}
+			case Input.Keys.NUM_2: {
+				renderer.setRenderMode(DoomLike.FIRST_PERSON_MODE);
+				break;
+			}
 		}
 		
 		return false;
@@ -62,10 +88,8 @@ public class InputManager implements InputProcessor {
 	
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		System.out.printf("Mouse: %dx%d\n", screenX, screenY);
-		player.setMouseX(screenX);
-		player.setMouseY(screenY);
-		return false;
+		player.setMouse(screenX, screenY);
+		return true;
 	}
 
 	@Override
