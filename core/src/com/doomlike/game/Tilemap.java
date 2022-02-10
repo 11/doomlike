@@ -7,6 +7,8 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Tilemap {
 	public static final int TILE_UNIT = 32;
+	public static final int TILE_MAP_WIDTH = Gdx.graphics.getWidth() / TILE_UNIT;
+	public static final int TILE_MAP_HEIGHT = Gdx.graphics.getHeight() / TILE_UNIT;
 	public static final Vector2 TILE_UNIT_VECTOR = new Vector2(Tilemap.TILE_UNIT, Tilemap.TILE_UNIT);
 
 	private int[][] tilemap = null;
@@ -16,12 +18,9 @@ public class Tilemap {
 	}
 
 	private int[][] createTilemap() {
-		final int UNIT_WIDTH = Gdx.graphics.getWidth() / TILE_UNIT;
-		final int UNIT_HEIGHT = Gdx.graphics.getHeight() / TILE_UNIT;
-
-		int[][] tilemap = new int[UNIT_HEIGHT][UNIT_WIDTH];
-		for (int i = 0; i < UNIT_HEIGHT; i++) {
-			for (int j = 0; j < UNIT_WIDTH; j++) {
+		int[][] tilemap = new int[TILE_MAP_HEIGHT][TILE_MAP_WIDTH];
+		for (int i = 0; i < TILE_MAP_HEIGHT; i++) {
+			for (int j = 0; j < TILE_MAP_WIDTH; j++) {
 				tilemap[i][j] = 0;
 			}
 		}
@@ -30,26 +29,20 @@ public class Tilemap {
 	}
 	
 	public void renderLines(ShapeRenderer shapeRenderer) {
-		final int UNIT_WIDTH = Gdx.graphics.getWidth() / TILE_UNIT;
-		final int UNIT_HEIGHT = Gdx.graphics.getHeight() / TILE_UNIT;
-		
-		for (int i = 0; i < UNIT_WIDTH; i++) {
+		for (int i = 0; i < TILE_MAP_WIDTH; i++) {
 			final float xPos = i * TILE_UNIT;
 			shapeRenderer.line(xPos, 0, xPos, Gdx.graphics.getHeight(), Color.WHITE, Color.WHITE);
 		}
 
-		for (int i = 0; i < UNIT_HEIGHT; i++) {
+		for (int i = 0; i < TILE_MAP_HEIGHT; i++) {
 			final float yPos = i * TILE_UNIT;
 			shapeRenderer.line(0, yPos, Gdx.graphics.getWidth(), yPos, Color.WHITE, Color.WHITE);
 		}
 	}
 
 	public void render(ShapeRenderer shapeRenderer) {
-		final int UNIT_WIDTH = Gdx.graphics.getWidth() / TILE_UNIT;
-		final int UNIT_HEIGHT = Gdx.graphics.getHeight() / TILE_UNIT;
-		
-		for (int i = 0; i < UNIT_HEIGHT; i++) {
-			for (int j = 0; j < UNIT_WIDTH; j++) {
+		for (int i = 0; i < TILE_MAP_HEIGHT; i++) {
+			for (int j = 0; j < TILE_MAP_WIDTH; j++) {
 				int tile = tilemap[i][j];
 				if (tile == 1) {
 					shapeRenderer.rect(j * TILE_UNIT+1, i*TILE_UNIT+1, TILE_UNIT-2, TILE_UNIT-2, Color.BLUE, Color.BLUE, Color.BLUE, Color.BLUE);
@@ -58,50 +51,92 @@ public class Tilemap {
 		}
 	}
 
-	public void toggleWall(int screenX, int screenY) {
+	public int getTile(int screenX, int screenY) {
+		if (this.isOutOfBounds(screenX, screenY)) {
+			return -1;
+		}
+
 		final int x = screenX / Tilemap.TILE_UNIT;
 		final int y = screenY / Tilemap.TILE_UNIT;
-		
-		int tile = tilemap[y][x];
-		if (tile == 1) {
-			tilemap[y][x] = 0;
-		} else if (tile == 0) {
-			tilemap[y][x] = 1;
-		}
+		return this.tilemap[y][x];
 	}
 
-	public void raycast(Vector2 origin, Vector2 dest) {
-		// final float yDiff = originX - destX;
-		// final float xDiff = originY - destY;
+	public boolean setTile(int screenX, int screenY, int value) {
+		if (this.isOutOfBounds(screenX, screenY)) {
+			return false;
+		}
 
-		// final float xDir = xDiff < 0 ? -1 : 1;
-		// final float yDir = yDiff < 0 ? -1 : 1;
+		final int x = screenX / Tilemap.TILE_UNIT;
+		final int y = screenY / Tilemap.TILE_UNIT;
+		this.tilemap[y][x] = value;
 
-		// final float RAY_LENGTH = (float) Math.sqrt((yDiff * yDiff) + (xDiff * xDiff));
-		// final float xStepLength = (float) Math.sqrt(1 + ((yDiff/xDiff) * (yDiff/xDiff)));
-		// final float yStepLength = (float) Math.sqrt(1 + ((xDiff/yDiff) * (xDiff/yDiff)));
+		return true;
+	}
 
-		// int tileX = -1;
-		// int tileY = -1;
+	public boolean toggleTile(int screenX, int screenY) {
+		int tile = this.getTile(screenX, screenY);
+		switch (tile) {
+			case -1: {
+				return false;
+			}
+			case 0: {
+				return this.setTile(screenX, screenY, 1);
+			}
+			case 1: {
+				return this.setTile(screenX, screenY, 0);
+			}
+		}
 
-		// int xRaySteps = 0;
-		// int yRaySteps = 0;
-		// while (Math.abs(xRaySteps) < RAY_LENGTH && Math.abs(yRaySteps) < RAY_LENGTH) {
-		// 	float xStep = xStepLength * xRaySteps;
-		// 	float yStep = yStepLength * yRaySteps;
-		// 	if (xStep <= yStep) {
-		// 		xRaySteps += 1;
-		// 	} else {
-		// 		yRaySteps += 1;
-		// 	}
+		return false;
+	}
 
-		// 	tileY = (int) (originY + yStep) / TILE_UNIT;
-		// 	tileX = (int) (originX + xStep) / TILE_UNIT;
-		// 	// if (tilemap[tileY][tileX] == 1) {
-		// 	// 	System.out.println("made it here");
-		// 	// }
-		// }
+	public boolean isCollision(int screenX, int screenY) {
+		if (this.isOutOfBounds(screenX, screenY)) {
+			return false;
+		}
 
-		// System.out.printf("%d %d\n", tileX, tileY);
+		int tile = this.getTile(screenX, screenY);
+		return tile != 0;
+	}
+
+	public boolean isOutOfBounds(int screenX, int screenY) {
+		final int tileX = screenX / Tilemap.TILE_UNIT;
+		final int tileY = screenY / Tilemap.TILE_UNIT;
+		return tileX < 0
+			|| tileY < 0
+			|| tileX > TILE_MAP_WIDTH
+			|| tileY > TILE_MAP_HEIGHT;
+	}
+
+	public void raycast(Vector2 origin, Vector2 dest, ShapeRenderer shapeRenderer) {
+		final float diffX = Math.abs(origin.x - dest.x);
+		final float diffY = Math.abs(origin.y - dest.y);
+
+		final int stepDirX = (dest.x < origin.x) ? -1 : 1;
+		final int stepDirY = (dest.y < origin.y) ? -1 : 1;
+
+		final Vector2 rayDir = new Vector2(diffX, diffY).nor().scl(TILE_UNIT);
+		final Vector2 stepDir = new Vector2(stepDirX, stepDirY);
+		Vector2 steps = new Vector2(0,0);
+
+		boolean hit = false;
+		float maxRayLength = 10;
+		while (!hit && maxRayLength) {
+			float screenX = rayDir.x * steps.x * stepDir.x;
+			float screenY = rayDir.y * steps.y * stepDir.y;
+			if (screenX < screenY || screenX == screenY) {
+				steps.x += 1;
+			} else {
+				steps.y+= 1;
+			}
+
+			if (this.isOutOfBounds((int) screenX, (int) screenX)) {
+				break;
+			}
+
+			if (this.isCollision((int) screenX, (int) screenY)) {
+				 hit = true;
+			}
+		}
 	}
 }
