@@ -7,11 +7,17 @@ public class InputManager implements InputProcessor {
 	private Player player;
 	private Tilemap tilemap;
 	private DoomLike renderer;
+
+	private int previousTileX;
+	private int previousTileY;
 	
 	public InputManager(Player player, Tilemap tilemap, DoomLike renderer) {
 		this.player = player;
 		this.tilemap = tilemap;
 		this.renderer = renderer;
+
+		this.previousTileX = -1;
+		this.previousTileY = -1;
 	}
 	
 	@Override
@@ -100,9 +106,7 @@ public class InputManager implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		tilemap.toggleWall(screenX, screenY);
-		
-		return false;
+		return tilemap.toggleTile(screenX, screenY);
 	}
 
 	@Override
@@ -113,7 +117,17 @@ public class InputManager implements InputProcessor {
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		return false;
+		player.setMouse(screenX, screenY);
+
+		final int tileX = screenX / Tilemap.TILE_UNIT;
+		final int tileY = screenY / Tilemap.TILE_UNIT;
+		if (tileX == this.previousTileX && tileY == this.previousTileY) {
+			return false;
+		}
+
+		this.previousTileX = tileX;
+		this.previousTileY = tileY;
+		return tilemap.toggleTile(screenX, screenY);
 	}
 
 	@Override

@@ -8,11 +8,11 @@ import com.badlogic.gdx.math.Vector2;
 public class Player {
 	final private float radius = Tilemap.TILE_UNIT / 2f;
 
-	private Vector2 pos;
-	private Vector2 dir;
-	private Vector2 mouse;
-	private Vector2 cameraPlane;
-	private Vector2 focalPoint;
+	final private Vector2 pos;
+	final private Vector2 dir;
+	final private Vector2 mouse;
+	final private Vector2 cameraPlane;
+	final private Vector2 focalPoint;
 
 	private boolean isMovingRight;
 	private boolean isMovingLeft;
