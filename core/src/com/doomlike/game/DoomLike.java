@@ -51,7 +51,6 @@ public class DoomLike extends ApplicationAdapter {
 
 	private void renderTopDown() {
 		shapeRenderer.setProjectionMatrix(camera.combined);
-		// tilemap.raycast(player.getX(), player.getY(), player.getMouseX(), player.getMouseY());
 
 		shapeRenderer.begin(ShapeType.Line);
 		tilemap.renderLines(shapeRenderer);
@@ -61,6 +60,8 @@ public class DoomLike extends ApplicationAdapter {
 		tilemap.render(shapeRenderer);
 		player.render(shapeRenderer);
 		shapeRenderer.end();
+
+		tilemap.raycast(player.getPositionVector(), player.getMouseVector(), shapeRenderer);
 	}
 
 	private void renderFirstPerson() {

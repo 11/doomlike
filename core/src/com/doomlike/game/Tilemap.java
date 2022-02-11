@@ -3,6 +3,7 @@ package com.doomlike.game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Vector2;
 
 public class Tilemap {
@@ -117,26 +118,39 @@ public class Tilemap {
 
 		final Vector2 rayDir = new Vector2(diffX, diffY).nor().scl(TILE_UNIT);
 		final Vector2 stepDir = new Vector2(stepDirX, stepDirY);
-		Vector2 steps = new Vector2(0,0);
+		Vector2 steps = new Vector2(1,1);
 
 		boolean hit = false;
-		float maxRayLength = 10;
-		while (!hit && maxRayLength) {
-			float screenX = rayDir.x * steps.x * stepDir.x;
-			float screenY = rayDir.y * steps.y * stepDir.y;
-			if (screenX < screenY || screenX == screenY) {
-				steps.x += 1;
+
+		int count = 0;
+		int maxLength = 7;
+		while (!hit && count < maxLength) {
+			float dx = rayDir.x * steps.x * stepDir.x;
+			float dy = rayDir.y * steps.y * stepDir.y;
+			if (dx < dy || dx == dy) {
+				steps.x += 1f;
 			} else {
-				steps.y+= 1;
+				steps.y += 1f;
 			}
 
-			if (this.isOutOfBounds((int) screenX, (int) screenX)) {
+			float screenX = origin.x + dx;
+			float screenY = origin.y + dy;
+
+			if (this.isOutOfBounds((int) screenX, (int) screenY)) {
 				break;
 			}
 
 			if (this.isCollision((int) screenX, (int) screenY)) {
-				 hit = true;
+				System.out.println("made it here");
+				shapeRenderer.begin(ShapeType.Filled);
+				shapeRenderer.setColor(Color.ORANGE);
+				shapeRenderer.circle(screenX, screenY, 4);
+				shapeRenderer.end();
+				hit = true;
 			}
+
+
+			count++;
 		}
 	}
 }
